@@ -287,13 +287,23 @@ module ActiveSupport
       @tzinfo = tzinfo || TimeZone.find_tzinfo(name)
     end
 
-    # Returns the offset of this time zone from UTC in seconds.
+    # Returns the offset of this time zone from UTC in seconds. This value is
+    # the Standard Time in the zone, and does not change with the current time
+    # of year, or whether DST is observed (see #current_utc_offset).
     def utc_offset
       if @utc_offset
         @utc_offset
       else
         tzinfo.current_period.utc_offset if tzinfo && tzinfo.current_period
       end
+    end
+
+    # Returns the current offset of this time zone from UTC in seconds. This is
+    # a convenience method for accessing the offset based on the current time,
+    # and is adjusted for DST when currently observed in this zone. (see
+    # TimeWithZone#utc_offset)
+    def current_utc_offset
+      now.utc_offset
     end
 
     # Returns a formatted string of the offset from UTC, or an alternative

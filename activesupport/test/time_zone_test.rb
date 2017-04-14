@@ -48,6 +48,20 @@ class TimeZoneTest < ActiveSupport::TestCase
       period = zone.tzinfo.current_period
       assert_equal period.utc_offset, zone.utc_offset
     end
+
+    define_method("test_current_utc_offset_for_#{name}_in_jan") do
+      zone = zone.dup
+      period = zone.period_for_utc(Time.utc(2017, 1, 1))
+      def zone.time_now; Time.utc(2017, 1, 1); end
+      assert_equal period.utc_total_offset, zone.current_utc_offset
+    end
+
+    define_method("test_current_utc_offset_for_#{name}_in_jul") do
+      zone = zone.dup
+      period = zone.period_for_utc(Time.utc(2017, 7, 1))
+      def zone.time_now; Time.utc(2017, 7, 1); end
+      assert_equal period.utc_total_offset, zone.current_utc_offset
+    end
   end
 
   def test_now
